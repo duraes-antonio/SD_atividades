@@ -1,28 +1,35 @@
+import json
 import socket
 
-# Create a TCP/IP socket
+SIMB_COMANDO: str = "-> "
+SIMB_ESPERA: str = "... "
+
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
-# Bind the socket to the address given on the command line
-server_address = ('localhost', 10001)
-print('starting up on %s port %s' % server_address)
-sock.bind(server_address)
+end_servidor = ('localhost', 10001)
+print(SIMB_COMANDO + 'executando - endereço: %s - porta: %s' % end_servidor)
+sock.bind(end_servidor)
 sock.listen(1)
 
 while True:
-    print('waiting for a connection')
-    connection, client_address = sock.accept()
+    print(SIMB_ESPERA + 'esperando por clientes\n')
+    conexao, end_cliente = sock.accept()
+
     try:
-        print('client connected:', client_address)
+        print(SIMB_COMANDO + 'cliente conectado - endereço: %s - porta: %s:'
+              % (end_cliente[0], end_cliente[1]))
 
         while True:
-            data = connection.recv(1024)
-            dado_convertido = data.decode('utf-8').replace('\0', '')
-            # print('-> recebido:', dict(dado_convertido))
+            data = conexao.recv(64).decode("utf-8")
 
             if data:
-                connection.sendall(dado_convertido.encode())
+                dado_convertido = json.loads(data)
+                print('-> recebido:', dado_convertido)
+                print('-> tipo recebido:', type(dado_convertido))
+                conexao.sendall(json.dumps(dado_convertido).encode("utf-8"))
+
             else:
                 break
+
     finally:
-        connection.close()
+        conexao.close()
