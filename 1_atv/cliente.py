@@ -1,21 +1,23 @@
 import json
 import socket
 
-SIMB_COMANDO: str = "-> "
-SIMB_ESPERA: str = "... "
+SIMB_COMANDO: str = "-->\t"
+SIMB_ESPERA: str = "...\t"
 
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
 
+# Endereço (127.0.0.1) e porta do servidor
 end_server = ('localhost', 10001)
 print(SIMB_COMANDO + 'conectado em - endereço: %s - porta: %s' % end_server)
 sock.connect(end_server)
 
 try:
 
-    msg = {"a": 5, "b": 7, "op": "+"}
-    print(SIMB_COMANDO + 'enviando dados: "%s"' % msg)
+    # Cria pacote com os operadores e o operando
+    msg = "1 + 7"
+    print(SIMB_ESPERA + 'enviando dados: "%s"' % msg)
 
-    msg_dumps = json.dumps({"a": 5, "b": 7, "op": "+"}).encode("utf-8")
+    msg_dumps = json.dumps(msg).encode("utf-8")
     sock.sendall(msg_dumps)
     data = sock.recv(64)
     dado_convertido = json.loads(data.decode("utf-8"))
