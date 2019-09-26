@@ -1,4 +1,5 @@
 import json
+import re
 import socket
 
 SIMB_COMANDO: str = "-->\t"
@@ -10,9 +11,9 @@ def calcular(expressao: str) -> float:
     return eval(nova_exp)
 
 
-def validar_dado() -> bool:
-    regex_num: str = r"^[-+\d]?\d+$"
-    return erros
+def validar_dado(dado: str) -> bool:
+    pattern_num: str = r"^[+-]?\d+[!]?(\s*[\+\-\*\/\^]\s*[+-]?\d+[!]?)*"
+    return re.match(pattern_num, dado) is not None
 
 
 def main():
@@ -34,7 +35,7 @@ def main():
 
             while True:
                 # Decodifique a mensagem com o padrão UTF-8
-                data = conexao.recv(64).decode("utf-8")
+                data = conexao.recv(1024).decode("utf-8")
 
                 # Se houver dados
                 if data is not None and len(data) > 1:
@@ -44,11 +45,12 @@ def main():
                     print(f'{SIMB_COMANDO} dado recebido:', dado_cvt)
 
                     # Valide o dado de entrada
-                    erros = []
+                    retorno = None
 
-                    retorno = erros
+                    if not validar_dado(dado_cvt):
+                        retorno = "#ERRO: A expressão não possui um formato válido!"
 
-                    if len(erros) == 0:
+                    else:
                         retorno = calcular(dado_cvt)
 
                     conexao.sendall(json.dumps(retorno).encode("utf-8"))

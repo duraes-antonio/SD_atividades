@@ -14,12 +14,12 @@ sock.connect(end_server)
 try:
 
     # Cria pacote com os operadores e o operando
-    msg = "1 + 7"
+    msg = "2 ^ 2.87 + 3.1"
     print(SIMB_ESPERA + 'enviando dados: "%s"' % msg)
 
     msg_dumps = json.dumps(msg).encode("utf-8")
     sock.sendall(msg_dumps)
-    data = sock.recv(64)
+    data = sock.recv(1024)
     dado_convertido = json.loads(data.decode("utf-8"))
 
     print(SIMB_COMANDO + 'dados recebidos:', dado_convertido)
