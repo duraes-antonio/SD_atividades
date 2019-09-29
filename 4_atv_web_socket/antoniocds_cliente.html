@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<textarea id="texto-in" onchange="msg = value">exemplo de texto</textarea>
+<button onclick="enviar_texto(msg)" type="button">ENVIAR</button>
+
+<span><br>Texto de retorno:<br></span>
+<textarea id="texto-out" readonly></textarea>
+</body>
+
+<script>
+    const serverPorta = 5000;
+    const serverEnd = '127.0.0.1';
+    const socket = new WebSocket('ws://' + serverEnd + ':' + serverPorta);
+
+    /*Texto de entrada e elemento input de saída (resposta do server)*/
+    let msg = document.getElementById('texto-in').value;
+    const input_resp = document.getElementById('texto-out');
+
+    function enviar_texto(texto) {
+        socket.send(texto);
+    }
+
+    /*Após carregar o DOM, faça o bind dos eventos do socket com as funções e
+    * manipulações do HTML e javascript*/
+    document.addEventListener(
+        'DOMContentLoaded',
+        () => {
+            socket.onopen = () => socket.send(msg);
+            socket.onmessage = (event) => input_resp.value = event.data;
+        }
+    );
+</script>
+</html>
