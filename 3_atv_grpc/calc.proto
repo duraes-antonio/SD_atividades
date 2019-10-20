@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package calc;
+
+// COMPILE COM O COMANDO ABAIXO:
+// python -m grpc_tools.protoc -I . --python_out=. --grpc_python_out=. calc.proto
+// Definição do serviço
+service Calculadora {
+
+    // Operações básicas
+    rpc Somar (DoisArgs) returns (Resposta) {
+    }
+    rpc Subtrair (DoisArgs) returns (Resposta) {
+    }
+    rpc Dividir (DoisArgs) returns (Resposta) {
+    }
+    rpc Multiplicar (DoisArgs) returns (Resposta) {
+    }
+    rpc Potencia (DoisArgs) returns (Resposta) {
+    }
+
+    rpc Fatorial (UmArgIntSemSinal) returns (RespostaIntSemSinal) {
+    }
+    rpc RaizQuad (UmArg) returns (Resposta) {
+    }
+}
+
+// Defina o componente com um número real
+message UmArg {
+    double num = 1;
+}
+
+// Defina o componente com um número inteiro sem sinal ("positivo")
+message UmArgIntSemSinal {
+    uint64 num = 1;
+}
+
+// Defina o componente com dois números reais
+message DoisArgs {
+    double num1 = 1;
+    double num2 = 2;
+}
+
+// Defina o formato e tipo da resposta das operações com números reais
+message Resposta {
+    double resultado = 1;
+}
+
+// Defina o formato da resposta das operações com inteiros positivos apenas
+message RespostaIntSemSinal {
+    uint64 resultado = 1;
+}
